@@ -1,0 +1,9 @@
+{
+  "singleQuote": true,
+  "semi": false,
+  "trailingComma": "none",
+  "quoteProps": "as-needed",
+  "arrowParens": "avoid",
+  "vueIndentScriptAndStyle": true,
+  "singleAttributePerLine": true
+}
