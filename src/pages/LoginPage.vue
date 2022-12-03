@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-  import { reactive, ref } from 'vue'
+  import { onMounted, reactive, ref } from 'vue'
   import useAuthUser from 'src/composables/useAuthUser'
   import { useRouter } from 'vue-router'
   import useNotify from 'src/composables/useNotify'
 
-  const { login } = useAuthUser()
+  const { login, isLoggedIn } = useAuthUser()
   const { notifyError } = useNotify()
   const router = useRouter()
 
@@ -26,6 +26,12 @@
       isLoading.value = false
     }
   }
+
+  onMounted(() => {
+    if (isLoggedIn()) {
+      router.push({ name: 'me' })
+    }
+  })
 </script>
 
 <template>
