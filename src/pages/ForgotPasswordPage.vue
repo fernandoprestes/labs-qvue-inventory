@@ -32,15 +32,17 @@
       class="q-gutter-md"
     >
       <h2 class="text-center text-h5">Esqueci a senha?</h2>
-      <div class="col-md-4 col-sm-6 col-xs-10 q-gutter-y-sm">
-        <q-input
-          outlined
-          v-model="formData.email"
-          type="email"
-          label="Email"
-          lazy-rules
-          :rules="[val => (val && val.length > 0) || 'Email obrigatório']"
-        />
+      <div class="row justify-center">
+        <div class="col-md-4 col-sm-6 col-xs-10">
+          <q-input
+            outlined
+            v-model="formData.email"
+            type="email"
+            label="Email"
+            lazy-rules
+            :rules="[val => (val && val.length > 0) || 'Email obrigatório']"
+          />
+        </div>
       </div>
       <div class="text-center q-gutter-md">
         <q-btn

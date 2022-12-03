@@ -32,25 +32,27 @@
   <q-page padding>
     <q-form
       @submit="onSubmit"
-      class="q-gutter-md justify-center"
+      class="q-gutter-md"
     >
       <h2 class="text-h5 text-center">Login</h2>
-      <div class="col-md-4 col-sm-6 col-xs-10 q-gutter-y-sm">
-        <q-input
-          outlined
-          lazy-rules
-          label="Email"
-          type="email"
-          autocomplete="off"
-          v-model="formData.email"
-          :rules="[val => (val && val.length > 0) || 'Email obrigatório']"
-        />
-        <q-input
-          outlined
-          label="Senha"
-          type="password"
-          v-model="formData.password"
-        />
+      <div class="row justify-center">
+        <div class="col-md-4 col-sm-6 col-xs-10 q-gutter-y-sm">
+          <q-input
+            outlined
+            lazy-rules
+            label="Email"
+            type="email"
+            autocomplete="off"
+            v-model="formData.email"
+            :rules="[val => (val && val.length > 0) || 'Email obrigatório']"
+          />
+          <q-input
+            outlined
+            label="Senha"
+            type="password"
+            v-model="formData.password"
+          />
+        </div>
       </div>
       <div class="text-center button-wrapper">
         <q-btn
@@ -70,6 +72,7 @@
           flat
           color="primary"
           label="Esqueceu a senha?"
+          class="q-mt-md"
           :to="{ name: 'forgot-password' }"
         />
       </div>

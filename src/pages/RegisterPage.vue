@@ -39,31 +39,33 @@
       class="q-gutter-md"
     >
       <h2 class="text-center text-h5">Register</h2>
-      <div class="col-md-4 col-sm-6 col-xs-10 q-gutter-y-sm">
-        <q-input
-          outlined
-          v-model="formData.name"
-          type="text"
-          label="Nome"
-          lazy-rules
-          :rules="[val => (val && val.length > 0) || 'Nome obrigatório']"
-        />
-        <q-input
-          outlined
-          v-model="formData.email"
-          type="email"
-          label="Email"
-          lazy-rules
-          :rules="[val => (val && val.length > 0) || 'Email obrigatório']"
-        />
-        <q-input
-          outlined
-          v-model="formData.password"
-          type="password"
-          label="Senha"
-          lazy-rules
-          :rules="[val => (val && val.length > 5) || 'Senha obrigatório']"
-        />
+      <div class="row justify-center">
+        <div class="col-md-4 col-sm-6 col-xs-10 q-gutter-y-sm">
+          <q-input
+            outlined
+            v-model="formData.name"
+            type="text"
+            label="Nome"
+            lazy-rules
+            :rules="[val => (val && val.length > 0) || 'Nome obrigatório']"
+          />
+          <q-input
+            outlined
+            v-model="formData.email"
+            type="email"
+            label="Email"
+            lazy-rules
+            :rules="[val => (val && val.length > 0) || 'Email obrigatório']"
+          />
+          <q-input
+            outlined
+            v-model="formData.password"
+            type="password"
+            label="Senha"
+            lazy-rules
+            :rules="[val => (val && val.length > 5) || 'Senha obrigatório']"
+          />
+        </div>
       </div>
       <div class="text-center q-gutter-md">
         <q-btn
