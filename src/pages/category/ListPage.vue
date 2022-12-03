@@ -84,6 +84,7 @@
           <h2 class="text-h5">Categorias</h2>
           <q-space />
           <q-btn
+            v-if="$q.platform.is.desktop"
             icon="mdi-plus"
             color="primary"
             label="Nova categoria"
@@ -119,5 +120,17 @@
         </template>
       </q-table>
     </div>
+    <q-page-sticky
+      v-if="$q.platform.is.mobile"
+      position="bottom-right"
+      :offset="[18, 18]"
+    >
+      <q-btn
+        fab
+        icon="mdi-plus"
+        color="primary"
+        :to="{ name: 'category-form' }"
+      />
+    </q-page-sticky>
   </q-page>
 </template>

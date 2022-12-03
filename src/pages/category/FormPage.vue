@@ -51,7 +51,7 @@
 <template>
   <q-page padding>
     <div class="row justify-center">
-      <div class="col-md-4 col-sm-6 col-xs-10 q-gutter-y-sm">
+      <div class="col-md-4 col-sm-6 col-xs-10 q-gutter-y-sm q-pt-md">
         <q-form
           @submit="onSubmit"
           class="q-gutter-md"
