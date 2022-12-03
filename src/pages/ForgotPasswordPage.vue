@@ -1,17 +1,13 @@
-<script setup lang="ts">
+<script lang="ts" setup>
   import { reactive, ref } from 'vue'
   import useAuthUser from 'src/composables/useAuthUser'
-  import { useRouter } from 'vue-router'
   import useNotify from 'src/composables/useNotify'
 
-  const { register } = useAuthUser()
-  const router = useRouter()
+  const { sendPasswordRestEmail } = useAuthUser()
   const { notifySuccess, notifyError } = useNotify()
 
   const formData = reactive({
-    name: '',
-    email: '',
-    password: ''
+    email: ''
   })
 
   const isLoading = ref(false)
@@ -19,35 +15,24 @@
   const onSubmit = async () => {
     try {
       isLoading.value = true
-      await register(formData)
-      notifySuccess('Cadastro realizado, confirme seu email!')
-      router.push({
-        name: 'email-confirmation',
-        query: { email: formData.email }
-      })
+      await sendPasswordRestEmail(formData.email)
+      notifySuccess(`Email de recuperação enviado para ${formData.email}`)
     } catch (error) {
-      notifyError(`Não foi possível registrar ${error}`)
+      notifyError(`Não foi possível recuperar a senha: ${error}`)
     } finally {
       isLoading.value = false
     }
   }
 </script>
+
 <template>
   <q-page padding>
     <q-form
       @submit="onSubmit"
       class="q-gutter-md"
     >
-      <h2 class="text-center text-h5">Register</h2>
+      <h2 class="text-center text-h5">Esqueci a senha?</h2>
       <div class="col-md-4 col-sm-6 col-xs-10 q-gutter-y-sm">
-        <q-input
-          outlined
-          v-model="formData.name"
-          type="text"
-          label="Nome"
-          lazy-rules
-          :rules="[val => (val && val.length > 0) || 'Nome obrigatório']"
-        />
         <q-input
           outlined
           v-model="formData.email"
@@ -55,14 +40,6 @@
           label="Email"
           lazy-rules
           :rules="[val => (val && val.length > 0) || 'Email obrigatório']"
-        />
-        <q-input
-          outlined
-          v-model="formData.password"
-          type="password"
-          label="Senha"
-          lazy-rules
-          :rules="[val => (val && val.length > 5) || 'Senha obrigatório']"
         />
       </div>
       <div class="text-center q-gutter-md">
@@ -74,7 +51,7 @@
           :to="{ name: 'login' }"
         />
         <q-btn
-          label="Cadastrar"
+          label="Enviar"
           type="submit"
           color="primary"
           :loading="isLoading"
