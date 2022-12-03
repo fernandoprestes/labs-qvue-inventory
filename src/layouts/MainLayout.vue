@@ -21,6 +21,11 @@
       title: 'Categorias',
       icon: 'mdi-shape-outline',
       routeName: 'category'
+    },
+    {
+      title: 'Produtos',
+      icon: 'mdi-package-variant-closed',
+      routeName: 'product'
     }
   ]
 

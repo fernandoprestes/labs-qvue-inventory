@@ -25,7 +25,10 @@ const routes: RouteRecordRaw[] = [
       { path: '', component: () => import('pages/IndexPage.vue') },
       { path: 'me', name: 'me', component: () => import('pages/MePage.vue') },
       { path: 'category', name: 'category', component: () => import('pages/category/ListPage.vue') },
-      { path: 'category/form/:id?', name: 'category-form', component: () => import('pages/category/FormPage.vue') }
+      { path: 'category/form/:id?', name: 'category-form', component: () => import('pages/category/FormPage.vue') },
+      { path: 'product', name: 'product', component: () => import('pages/product/ListPage.vue') },
+      { path: 'product/form/:id?', name: 'product-form', component: () => import('pages/product/FormPage.vue') }
+
     ]
   },
 

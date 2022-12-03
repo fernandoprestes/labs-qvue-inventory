@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+  import { Category } from 'src/@types/Category'
   import useApi from 'src/composables/useApi'
   import useNotify from 'src/composables/useNotify'
   import { computed, onMounted, reactive } from 'vue'
@@ -11,24 +12,28 @@
 
   const form = reactive({
     data: {
-      name: ''
+      name: '',
+      description: '',
+      amount: '',
+      price: '',
+      category: ''
     },
+    optionsCategories: [] as Category[],
     isLoading: false
   })
-
   const isUpdate = computed(() => route.params.id)
 
   const onSubmit = async () => {
     try {
       form.isLoading = true
       if (isUpdate.value) {
-        await api.update('category', form.data)
-        notifySuccess('Categoria atualizada com sucesso!')
+        await api.update('product', form.data)
+        notifySuccess('Produto atualizado com sucesso!')
       } else {
-        await api.post('category', form.data)
-        notifySuccess('Categoria cadastrada com sucesso!')
+        await api.post('product', form.data)
+        notifySuccess('Produto cadastrado com sucesso!')
       }
-      router.push({ name: 'category' })
+      router.push({ name: 'product' })
     } catch (error) {
       notifyError(`Não foi possível cadastrar: ${error}`)
     } finally {
@@ -36,13 +41,18 @@
     }
   }
 
+  const getCategories = async () => {
+    form.optionsCategories = await api.get('category')
+  }
+
   onMounted(async () => {
+    await getCategories()
     if (isUpdate.value) {
       const id = route.params.id
-      form.data = await api.getById('category', id.toString())
+      form.data = await api.getById('product', id.toString())
       if (!form.data) {
-        notifyError('Categoria não encontrada')
-        router.push({ name: 'category' })
+        notifyError('Produto não encontrado')
+        router.push({ name: 'product' })
       }
     }
   })
@@ -56,8 +66,8 @@
           @submit="onSubmit"
           class="q-gutter-md"
         >
-          <h2 class="text-h5 text-center">Nova Categoria</h2>
-          <div>
+          <h2 class="text-h5 text-center">Novo Produto</h2>
+          <div class="column q-gutter-y-md">
             <q-input
               outlined
               v-model="form.data.name"
@@ -65,6 +75,33 @@
               label="Nome"
               color="primary"
               :rules="[val => (val && val.length > 0) || 'Nome é obrigatório']"
+            />
+            <q-editor
+              v-model="form.data.description"
+              min-height="5rem"
+            />
+            <q-input
+              outlined
+              v-model="form.data.amount"
+              type="number"
+              label="Quantidade em estoque"
+            />
+            <q-input
+              outlined
+              v-model="form.data.price"
+              type="number"
+              label="Preço"
+              prefix="R$"
+            />
+            <q-select
+              v-model="form.data.category"
+              :options="form.optionsCategories"
+              option-value="id"
+              option-label="name"
+              label="Categoria"
+              outlined
+              map-options
+              emit-value
             />
           </div>
           <div class="button-wrapper">
@@ -78,7 +115,7 @@
               flat
               label="Cancelar"
               color="primary"
-              :to="{ name: 'category' }"
+              :to="{ name: 'product' }"
             />
           </div>
         </q-form>
@@ -86,10 +123,3 @@
     </div>
   </q-page>
 </template>
-<style lang="scss" scoped>
-  .button-wrapper {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-end;
-  }
-</style>

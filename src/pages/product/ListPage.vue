@@ -1,22 +1,22 @@
 <script lang="ts" setup>
   import useApi from 'src/composables/useApi'
   import useNotify from 'src/composables/useNotify'
-  import { onMounted, ref } from 'vue'
-  import { Category } from 'src/@types/Category'
+  import { Product } from 'src/@types/Product'
   import { useQuasar } from 'quasar'
-  import { columnsCategory } from './columnsTable'
+  import { onMounted, ref } from 'vue'
+  import { columnsProduct } from './columnsTable'
 
   const api = useApi()
   const $q = useQuasar()
   const { notifySuccess, notifyError } = useNotify()
 
-  const categories = ref<Category[]>([])
+  const products = ref<Product[]>([])
   const isLoading = ref(false)
 
-  const handleListCategories = async () => {
+  const handleListProducts = async () => {
     try {
       isLoading.value = true
-      categories.value = await api.get('category')
+      products.value = await api.get('product')
     } catch (error) {
       notifyError(`Não foi possível buscar as categorias!: ${error}`)
     } finally {
@@ -24,18 +24,18 @@
     }
   }
 
-  const handleRemoveCategory = async (category: Category) => {
+  const handleRemoveProduct = (product: Product) => {
     try {
       $q.dialog({
-        title: 'Deletar uma Categoria',
-        message: `Realmente deseja remover ${category.name.toLocaleUpperCase()} ?`,
+        title: 'Deletar um produto',
+        message: `Realmente deseja remover ${product.name.toLocaleUpperCase()} ?`,
         cancel: true,
         persistent: true
       }).onOk(async () => {
-        await api.remover('category', category.id)
-        notifySuccess('Categoria removida com sucesso!')
-        categories.value = []
-        await handleListCategories()
+        await api.remover('product', product.id)
+        notifySuccess('Produto removido com sucesso!')
+        products.value = []
+        await handleListProducts()
       })
     } catch (error) {
       notifyError(`Não foi possível remover a categoria!: ${error}`)
@@ -43,7 +43,7 @@
   }
 
   onMounted(async () => {
-    await handleListCategories()
+    await handleListProducts()
   })
 </script>
 
@@ -51,22 +51,42 @@
   <q-page padding>
     <div class="row">
       <q-table
-        :rows="categories"
-        :columns="columnsCategory"
-        :loading="isLoading"
+        title="Table Title"
+        :rows="products"
+        :columns="columnsProduct"
         row-key="id"
         class="col-12"
       >
         <template v-slot:top>
-          <h2 class="text-h5">Categorias</h2>
+          <h2 class="text-h5">Produtos</h2>
           <q-space />
           <q-btn
             v-if="$q.platform.is.desktop"
             icon="mdi-plus"
             color="primary"
-            label="Nova categoria"
-            :to="{ name: 'category-form' }"
+            label="Novo produto"
+            :to="{ name: 'product-form' }"
           />
+        </template>
+        <template v-slot:body-cell-imgUrl="props">
+          <q-td
+            :props="props"
+            class="q-gutter-x-sm"
+          >
+            <q-img
+              v-if="props.row.imgUrl"
+              :src="props.row.imgUrl"
+              :ratio="16 / 9"
+            />
+            <q-avatar
+              v-else
+              size="24px"
+              font-size="24px"
+              text-color="grey"
+              icon="mdi-image-off"
+              flat
+            />
+          </q-td>
         </template>
         <template v-slot:body-cell-actions="props">
           <q-td
@@ -79,7 +99,7 @@
               color="info"
               icon="mdi-pencil-outline"
               size="sm"
-              :to="{ name: 'category-form', params: { id: props.row.id } }"
+              :to="{ name: 'product-form', params: { id: props.row.id } }"
             >
               <q-tooltip> Editar </q-tooltip>
             </q-btn>
@@ -89,7 +109,7 @@
               color="negative"
               icon="mdi-delete-outline"
               size="sm"
-              @click="handleRemoveCategory(props.row)"
+              @click="handleRemoveProduct(props.row)"
             >
               <q-tooltip> Deletar </q-tooltip>
             </q-btn>
@@ -106,7 +126,7 @@
         fab
         icon="mdi-plus"
         color="primary"
-        :to="{ name: 'category-form' }"
+        :to="{ name: 'product-form' }"
       />
     </q-page-sticky>
   </q-page>
