@@ -1,12 +1,17 @@
 import { reactive } from 'vue'
 import useSupabase from 'src/boot/supabase'
+import { User } from '@supabase/supabase-js'
 
 interface Auth {
   email: string,
   password: string
 }
 
-const data = reactive({
+interface DataUser {
+  user: User | null
+}
+
+const data = reactive<DataUser>({
   user: null
 })
 export default function useAuthUser () {

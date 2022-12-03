@@ -1,4 +1,5 @@
 import { route } from 'quasar/wrappers'
+import useAuthUser from 'src/composables/useAuthUser'
 import {
   createMemoryHistory,
   createRouter,
@@ -30,6 +31,14 @@ export default route(function (/* { store, ssrContext } */) {
     // quasar.conf.js -> build -> vueRouterMode
     // quasar.conf.js -> build -> publicPath
     history: createHistory(process.env.VUE_ROUTER_BASE)
+  })
+
+  Router.beforeEach((to) => {
+    const { isLoggedIn } = useAuthUser()
+
+    if (!isLoggedIn() && to.meta.requiresAuth && !Object.keys(to.query).includes('fromEmail')) {
+      return { name: 'login' }
+    }
   })
 
   return Router

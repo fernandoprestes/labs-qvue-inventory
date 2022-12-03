@@ -9,14 +9,14 @@ module.exports = {
   // `parser: 'vue-eslint-parser'` is already included with any 'plugin:vue/**' config and should be omitted
   parserOptions: {
     parser: require.resolve('@typescript-eslint/parser'),
-    extraFileExtensions: ['.vue'],
+    extraFileExtensions: ['.vue']
   },
 
   env: {
-    'browser': true,
-    'es2021': true,
-    'node': true,
-    'vue/setup-compiler-macros': true,
+    browser: true,
+    es2021: true,
+    node: true,
+    'vue/setup-compiler-macros': true
   },
 
   // Rules order is important, please avoid shuffling them
@@ -35,7 +35,7 @@ module.exports = {
     // 'plugin:vue/vue3-strongly-recommended', // Priority B: Strongly Recommended (Improving Readability)
     // 'plugin:vue/vue3-recommended', // Priority C: Recommended (Minimizing Arbitrary Choices and Cognitive Overhead)
 
-    'standard',
+    'standard'
   ],
 
   plugins: [
@@ -44,7 +44,7 @@ module.exports = {
 
     // https://eslint.vuejs.org/user-guide/#why-doesn-t-it-work-on-vue-files
     // required to lint *.vue files
-    'vue',
+    'vue'
   ],
 
   globals: {
@@ -57,7 +57,7 @@ module.exports = {
     __QUASAR_SSR_PWA__: 'readonly',
     process: 'readonly',
     Capacitor: 'readonly',
-    chrome: 'readonly',
+    chrome: 'readonly'
   },
 
   // add your custom rules here
@@ -84,8 +84,8 @@ module.exports = {
 
     'prefer-promise-reject-errors': 'off',
 
-    'quotes': ['warn', 'single', { avoidEscape: true }],
-
+    quotes: ['warn', 'single', { avoidEscape: true }],
+    indent: 'off',
     // this rule, if on, would require explicit return type on the `render` function
     '@typescript-eslint/explicit-function-return-type': 'off',
 
@@ -97,6 +97,6 @@ module.exports = {
     'no-unused-vars': 'off',
 
     // allow debugger during development only
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-  },
-};
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off'
+  }
+}
