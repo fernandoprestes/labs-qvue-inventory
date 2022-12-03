@@ -1,10 +1,16 @@
 <script lang="ts" setup>
-  interface Columns {
-    name: string
-    label: string
-    field: string
-    align?: 'left' | 'right' | 'center' | undefined
-  }
+  import useApi from 'src/composables/useApi'
+  import useNotify from 'src/composables/useNotify'
+  import { onMounted, ref } from 'vue'
+  import { ColumnsTable } from 'src/@types/ColumnsTable'
+  import { Category } from 'src/@types/Category'
+  import { useQuasar } from 'quasar'
+
+  const api = useApi()
+  const { notifySuccess, notifyError } = useNotify()
+
+  const $q = useQuasar()
+
   const columns = [
     {
       name: 'id',
@@ -24,26 +30,53 @@
       label: 'Ações',
       field: 'actions'
     }
-  ] as Columns[]
+  ] as ColumnsTable[]
 
-  const rows = [
-    {
-      id: 1,
-      name: 'Camisa'
-    },
-    {
-      id: 2,
-      name: 'Tênis'
+  const categories = ref<Category[]>([])
+
+  const isLoading = ref(false)
+
+  const handleListCategories = async () => {
+    try {
+      isLoading.value = true
+      categories.value = await api.get('category')
+    } catch (error) {
+      notifyError(`Não foi possível buscar as categorias!: ${error}`)
+    } finally {
+      isLoading.value = false
     }
-  ]
+  }
+
+  const handleRemoveCategory = async (category: Category) => {
+    try {
+      $q.dialog({
+        title: 'Deletar uma Categoria',
+        message: `Realmente deseja remover ${category.name.toLocaleUpperCase()} ?`,
+        cancel: true,
+        persistent: true
+      }).onOk(async () => {
+        await api.remover('category', category.id)
+        notifySuccess('Categoria removida com sucesso!')
+        categories.value = []
+        await handleListCategories()
+      })
+    } catch (error) {
+      notifyError(`Não foi possível remover a categoria!: ${error}`)
+    }
+  }
+
+  onMounted(async () => {
+    await handleListCategories()
+  })
 </script>
 
 <template>
   <q-page padding>
     <div class="row">
       <q-table
-        :rows="rows"
+        :rows="categories"
         :columns="columns"
+        :loading="isLoading"
         row-key="id"
         class="col-12"
       >
@@ -54,6 +87,7 @@
             icon="mdi-plus"
             color="primary"
             label="Nova categoria"
+            :to="{ name: 'category-form' }"
           />
         </template>
         <template v-slot:body-cell-actions="props">
@@ -67,6 +101,7 @@
               color="info"
               icon="mdi-pencil-outline"
               size="sm"
+              :to="{ name: 'category-form', params: { id: props.row.id } }"
             >
               <q-tooltip> Editar </q-tooltip>
             </q-btn>
@@ -76,6 +111,7 @@
               color="negative"
               icon="mdi-delete-outline"
               size="sm"
+              @click="handleRemoveCategory(props.row)"
             >
               <q-tooltip> Deletar </q-tooltip>
             </q-btn>

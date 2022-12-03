@@ -24,7 +24,8 @@ const routes: RouteRecordRaw[] = [
     children: [
       { path: '', component: () => import('pages/IndexPage.vue') },
       { path: 'me', name: 'me', component: () => import('pages/MePage.vue') },
-      { path: 'category', name: 'category', component: () => import('pages/category/ListPage.vue') }
+      { path: 'category', name: 'category', component: () => import('pages/category/ListPage.vue') },
+      { path: 'category/form/:id?', name: 'category-form', component: () => import('pages/category/FormPage.vue') }
     ]
   },
 

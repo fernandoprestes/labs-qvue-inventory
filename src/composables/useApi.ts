@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import useSupabase from 'src/boot/supabase'
 import useAuthUser from './useAuthUser'
 
@@ -30,7 +31,7 @@ export default function useApi () {
     return data
   }
 
-  const remover = async (table: string, id: string) => {
+  const remover = async (table: string, id: number) => {
     const { data, error } = await supabase.from(table).delete().match({ id })
     if (error) throw error
     return data
