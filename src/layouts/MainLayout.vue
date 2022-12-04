@@ -1,15 +1,20 @@
 <script setup lang="ts">
-  import { ref } from 'vue'
+  import { onMounted, ref } from 'vue'
   import { useQuasar } from 'quasar'
   import { useRouter } from 'vue-router'
   import useAuthUser from 'src/composables/useAuthUser'
   import EssentialLink, {
     EssentialLinkProps
   } from 'components/EssentialLink.vue'
+  import useApi from 'src/composables/useApi'
 
   const { logout } = useAuthUser()
   const router = useRouter()
   const $q = useQuasar()
+
+  const { getBrand } = useApi()
+
+  const storeName = ref()
 
   const essentialLinks: EssentialLinkProps[] = [
     {
@@ -26,6 +31,11 @@
       title: 'Produtos',
       icon: 'mdi-package-variant-closed',
       routeName: 'product'
+    },
+    {
+      title: 'Configuração',
+      icon: 'mdi-cog',
+      routeName: 'config-form'
     }
   ]
 
@@ -46,6 +56,10 @@
       router.replace({ name: 'login' })
     })
   }
+
+  onMounted(async () => {
+    storeName.value = await getBrand()
+  })
 </script>
 
 <template>
@@ -61,7 +75,7 @@
           @click="toggleLeftDrawer"
         />
 
-        <q-toolbar-title> Quasar App </q-toolbar-title>
+        <q-toolbar-title> {{ storeName?.name }} </q-toolbar-title>
 
         <div>
           <q-btn-dropdown

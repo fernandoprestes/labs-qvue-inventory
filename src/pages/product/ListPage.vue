@@ -2,15 +2,18 @@
   import useApi from 'src/composables/useApi'
   import useNotify from 'src/composables/useNotify'
   import { Product } from 'src/@types/Product'
-  import { useQuasar } from 'quasar'
+  import { useQuasar, copyToClipboard } from 'quasar'
   import { onMounted, ref } from 'vue'
   import { columnsProduct } from './columnsTable'
   import useAuthUser from 'src/composables/useAuthUser'
+  import { useRouter } from 'vue-router'
 
   const { data } = useAuthUser()
   const api = useApi()
   const $q = useQuasar()
   const { notifySuccess, notifyError } = useNotify()
+
+  const router = useRouter()
 
   const products = ref<Product[]>([])
   const isLoading = ref(false)
@@ -46,6 +49,22 @@
     }
   }
 
+  const handleCopyPublicLink = () => {
+    const { fullPath } = router.resolve({
+      name: 'product-store',
+      params: { id: data.user?.id }
+    })
+
+    const externalLink = `${window.origin}${fullPath}`
+    copyToClipboard(externalLink)
+      .then(() => {
+        notifySuccess('Link copiado com sucesso!')
+      })
+      .catch(() => {
+        notifyError('Não foi possível copiar')
+      })
+  }
+
   onMounted(async () => {
     await handleListProducts()
   })
@@ -70,6 +89,16 @@
             outline
             dense
             :to="{ name: 'product-store', params: { id: data.user?.id } }"
+            target="_blank"
+          />
+          <q-btn
+            color="primary q-ml-sm"
+            icon="mdi-content-copy"
+            label="Copiar link"
+            size="sm"
+            outline
+            dense
+            @click="handleCopyPublicLink"
           />
           <q-space />
           <q-btn

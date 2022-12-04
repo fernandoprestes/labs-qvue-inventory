@@ -1,12 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import useSupabase from 'src/boot/supabase'
 import useAuthUser from './useAuthUser'
-import { uid } from 'quasar'
+import { uid, useQuasar } from 'quasar'
+import useBrand from './useBrand'
+import { useRoute } from 'vue-router'
+import { reactive } from 'vue'
+
+const config = reactive({
+  brand: {
+    primary: '',
+    secondary: '',
+    name: '',
+    phone: ''
+  }
+})
 
 export default function useApi () {
   const { supabase } = useSupabase()
   const { data } = useAuthUser()
   const user = data.user
+  const route = useRoute()
+  const { setBrand } = useBrand()
+  const $q = useQuasar()
 
   const get = async (table: string) => {
     const { data, error } = await supabase.from(table).select('*')
@@ -61,6 +76,21 @@ export default function useApi () {
     return data.publicUrl
   }
 
+  const getBrand = async () => {
+    const id = route.params.id || user?.id
+    if (id) {
+      $q.loading.show()
+      const { data, error } = await supabase.from('config').select('*').eq('user_id', id)
+      if (error) throw error
+      if (data.length > 0) {
+        config.brand = data[0]
+        setBrand(config.brand.primary, config.brand.secondary)
+      }
+      $q.loading.hide()
+      return config.brand
+    }
+  }
+
   return {
     get,
     getById,
@@ -68,6 +98,7 @@ export default function useApi () {
     update,
     remover,
     uploadImg,
-    getPublic
+    getPublic,
+    getBrand
   }
 }

@@ -17,10 +17,10 @@ const routes: RouteRecordRaw[] = [
   },
 
   {
-    path: '/',
+    path: '/product-store',
     component: () => import('layouts/LoginLayout.vue'),
     children: [
-      { path: 'product-store/:id', name: 'product-store', component: () => import('pages/product/StorePage.vue') }
+      { path: ':id', name: 'product-store', component: () => import('pages/product/StorePage.vue') }
     ]
   },
 
@@ -31,12 +31,13 @@ const routes: RouteRecordRaw[] = [
       requiresAuth: true
     },
     children: [
-      { path: '', component: () => import('pages/IndexPage.vue') },
+      { path: '', redirect: 'me' },
       { path: 'me', name: 'me', component: () => import('pages/MePage.vue') },
       { path: 'category', name: 'category', component: () => import('pages/category/ListPage.vue') },
       { path: 'category/form/:id?', name: 'category-form', component: () => import('pages/category/FormPage.vue') },
       { path: 'product', name: 'product', component: () => import('pages/product/ListPage.vue') },
-      { path: 'product/form/:id?', name: 'product-form', component: () => import('pages/product/FormPage.vue') }
+      { path: 'product/form/:id?', name: 'product-form', component: () => import('pages/product/FormPage.vue') },
+      { path: 'config-form/:id?', name: 'config-form', component: () => import('pages/FormConfig.vue') }
 
     ]
   },
