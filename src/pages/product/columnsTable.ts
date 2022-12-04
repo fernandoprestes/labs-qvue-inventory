@@ -1,6 +1,7 @@
 import { ColumnsTable } from 'src/@types/ColumnsTable'
 
 import { formatterCurrency } from 'src/utils/formatter'
+import { ref } from 'vue'
 
 export const columnsProduct = [
   {
@@ -44,3 +45,8 @@ export const columnsProduct = [
     field: 'actions'
   }
 ] as ColumnsTable[]
+
+export const initialPagination = ref({
+  page: 1,
+  rowPerPage: 5
+})

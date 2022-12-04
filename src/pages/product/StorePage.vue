@@ -2,10 +2,11 @@
   import useApi from 'src/composables/useApi'
   import useNotify from 'src/composables/useNotify'
   import { Product } from 'src/@types/Product'
-  import { onMounted, reactive, ref } from 'vue'
+  import { computed, onMounted, reactive, ref } from 'vue'
   import { useRoute } from 'vue-router'
   import { formatterCurrency } from 'src/utils/formatter'
   import DialogProductDetails from 'components/DialogProductDetails.vue'
+  import { initialPagination } from './columnsTable'
 
   const api = useApi()
   const { notifyError } = useNotify()
@@ -20,6 +21,10 @@
   const paramsId = route.params.id.toString()
 
   const optionsCategories = ref()
+
+  const pagesNumber = computed(() =>
+    Math.ceil(products.value.length / initialPagination.value.rowPerPage)
+  )
 
   const dialog = reactive({
     open: false,
@@ -42,6 +47,10 @@
     } finally {
       isLoading.value = false
     }
+  }
+
+  const handleScrollToTop = async () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   const getCategories = async (userId: string) => {
@@ -79,6 +88,8 @@
         row-key="id"
         class="col-12"
         :filter="filter"
+        v-model:pagination="initialPagination"
+        hide-pagination
       >
         <template v-slot:top>
           <h2 class="text-h5">Produtos</h2>
@@ -118,6 +129,14 @@
           </div>
         </template>
       </q-table>
+      <div class="row justify-center col-12 q-mt-md">
+        <q-pagination
+          v-model="initialPagination.page"
+          :max="pagesNumber"
+          @update:model-value="handleScrollToTop"
+          direction-links
+        />
+      </div>
     </div>
   </q-page>
   <DialogProductDetails
