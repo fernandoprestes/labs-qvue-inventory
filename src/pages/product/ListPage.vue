@@ -88,7 +88,7 @@
             <q-img
               v-if="props.row.imgUrl"
               :src="props.row.imgUrl"
-              :ratio="16 / 9"
+              :ratio="4 / 3"
               spinner-size="24px"
               spinner-color="primary"
             />

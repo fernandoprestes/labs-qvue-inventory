@@ -2,9 +2,10 @@
   import useApi from 'src/composables/useApi'
   import useNotify from 'src/composables/useNotify'
   import { Product } from 'src/@types/Product'
-  import { onMounted, ref } from 'vue'
+  import { onMounted, reactive, ref } from 'vue'
   import { useRoute } from 'vue-router'
   import { formatterCurrency } from 'src/utils/formatter'
+  import DialogProductDetails from 'components/DialogProductDetails.vue'
 
   const api = useApi()
   const { notifyError } = useNotify()
@@ -13,8 +14,17 @@
 
   const products = ref<Product[]>([])
   const isLoading = ref(false)
-
   const filter = ref('')
+
+  const dialog = reactive({
+    open: false,
+    product: {} as Product
+  })
+
+  const handleDetailsProduct = async (product: Product) => {
+    dialog.product = product
+    dialog.open = true
+  }
 
   const handleListProducts = async (userId: string) => {
     try {
@@ -61,11 +71,15 @@
         </template>
         <template v-slot:item="props">
           <div class="q-pa-xs col-xs-12 col-sm-6 col-md-4">
-            <q-card>
+            <q-card
+              class="cursor-pointer"
+              v-ripple:primary
+              @click="handleDetailsProduct(props.row)"
+            >
               <q-card-section class="text-center">
                 <q-img
                   :src="props.row.imgUrl"
-                  :ratio="16 / 9"
+                  :ratio="4 / 3"
                   spinner-color="primary"
                   spinner-size="82px"
                 />
@@ -80,4 +94,8 @@
       </q-table>
     </div>
   </q-page>
+  <DialogProductDetails
+    v-model="dialog.open"
+    :product="dialog.product"
+  />
 </template>
