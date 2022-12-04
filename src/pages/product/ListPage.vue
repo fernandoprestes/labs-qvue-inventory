@@ -55,7 +55,6 @@
   <q-page padding>
     <div class="row">
       <q-table
-        title="Table Title"
         :rows="products"
         :columns="columnsProduct"
         row-key="id"
@@ -63,6 +62,15 @@
       >
         <template v-slot:top>
           <h2 class="text-h5">Produtos</h2>
+          <q-btn
+            color="primary q-ml-sm"
+            icon="mdi-store"
+            label="Minha Loja"
+            size="sm"
+            outline
+            dense
+            :to="{ name: 'product-store', params: { id: data.user?.id } }"
+          />
           <q-space />
           <q-btn
             v-if="$q.platform.is.desktop"
@@ -81,6 +89,8 @@
               v-if="props.row.imgUrl"
               :src="props.row.imgUrl"
               :ratio="16 / 9"
+              spinner-size="24px"
+              spinner-color="primary"
             />
             <q-avatar
               v-else

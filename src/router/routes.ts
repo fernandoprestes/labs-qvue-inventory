@@ -12,6 +12,15 @@ const routes: RouteRecordRaw[] = [
       { path: 'email-confirmation', name: 'email-confirmation', component: () => import('pages/auth/EmailConfirmationPage.vue') },
       { path: 'forgot-password', name: 'forgot-password', component: () => import('pages/auth/ForgotPasswordPage.vue') },
       { path: 'reset-password', name: 'reset-password', component: () => import('pages/auth/ResetPasswordPage.vue') }
+
+    ]
+  },
+
+  {
+    path: '/',
+    component: () => import('layouts/LoginLayout.vue'),
+    children: [
+      { path: 'product-store/:id', name: 'product-store', component: () => import('pages/product/StorePage.vue') }
     ]
   },
 
