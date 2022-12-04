@@ -5,7 +5,9 @@
   import { useQuasar } from 'quasar'
   import { onMounted, ref } from 'vue'
   import { columnsProduct } from './columnsTable'
+  import useAuthUser from 'src/composables/useAuthUser'
 
+  const { data } = useAuthUser()
   const api = useApi()
   const $q = useQuasar()
   const { notifySuccess, notifyError } = useNotify()
@@ -16,7 +18,9 @@
   const handleListProducts = async () => {
     try {
       isLoading.value = true
-      products.value = await api.get('product')
+      if (data.user?.id) {
+        products.value = await api.getPublic('product', data.user.id)
+      }
     } catch (error) {
       notifyError(`Não foi possível buscar as categorias!: ${error}`)
     } finally {

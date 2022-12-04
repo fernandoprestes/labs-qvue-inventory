@@ -1,5 +1,7 @@
 import { ColumnsTable } from 'src/@types/ColumnsTable'
 
+import { formatterCurrency } from 'src/utils/formatter'
+
 export const columnsProduct = [
   {
     name: 'id',
@@ -32,7 +34,8 @@ export const columnsProduct = [
     label: 'Preço',
     align: 'left',
     field: 'price',
-    sortable: true
+    sortable: true,
+    format: (val) => formatterCurrency(val)
   },
   {
     name: 'actions',

@@ -2,7 +2,7 @@
   import { Category } from 'src/@types/Category'
   import useApi from 'src/composables/useApi'
   import useNotify from 'src/composables/useNotify'
-  import { computed, onMounted, reactive } from 'vue'
+  import { computed, onMounted, reactive, ref } from 'vue'
   import { useRouter, useRoute } from 'vue-router'
 
   const router = useRouter()
@@ -16,16 +16,22 @@
       description: '',
       amount: '',
       price: '',
-      category: ''
+      category: '',
+      imgUrl: ''
     },
     optionsCategories: [] as Category[],
     isLoading: false
   })
+  const img = ref()
   const isUpdate = computed(() => route.params.id)
 
   const onSubmit = async () => {
     try {
       form.isLoading = true
+      if (img.value.length > 0) {
+        const imgUrl = await api.uploadImg(img.value[0], 'products')
+        form.data.imgUrl = imgUrl
+      }
       if (isUpdate.value) {
         await api.update('product', form.data)
         notifySuccess('Produto atualizado com sucesso!')
@@ -70,6 +76,14 @@
           <div class="column q-gutter-y-md">
             <q-input
               outlined
+              type="file"
+              label="Imagem"
+              stack-label
+              v-model="img"
+              accept="image/*"
+            />
+            <q-input
+              outlined
               v-model="form.data.name"
               type="text"
               label="Nome"
@@ -85,13 +99,16 @@
               v-model="form.data.amount"
               type="number"
               label="Quantidade em estoque"
+              :rules="[val => !!val || 'Quantidade é obrigatório']"
             />
             <q-input
               outlined
               v-model="form.data.price"
-              type="number"
+              type="text"
               label="Preço"
+              onkeydown="return event.keyCode !== 69"
               prefix="R$"
+              :rules="[val => !!val || 'Quantidade é obrigatório']"
             />
             <q-select
               v-model="form.data.category"
@@ -102,6 +119,7 @@
               outlined
               map-options
               emit-value
+              :rules="[val => !!val || 'Categoria é obrigatório']"
             />
           </div>
           <div class="button-wrapper">

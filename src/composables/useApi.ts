@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import useSupabase from 'src/boot/supabase'
 import useAuthUser from './useAuthUser'
+import { uid } from 'quasar'
 
 export default function useApi () {
   const { supabase } = useSupabase()
@@ -9,6 +10,12 @@ export default function useApi () {
 
   const get = async (table: string) => {
     const { data, error } = await supabase.from(table).select('*')
+    if (error) throw error
+    return data
+  }
+
+  const getPublic = async (table: string, userId: string) => {
+    const { data, error } = await supabase.from(table).select('*').eq('user_id', userId)
     if (error) throw error
     return data
   }
@@ -37,11 +44,30 @@ export default function useApi () {
     return data
   }
 
+  const uploadImg = async (file: string, storage:string) => {
+    const fileUid = uid()
+    const { error } = await supabase.storage.from(storage).upload(fileUid, file, {
+      cacheControl: '3600',
+      upsert: false
+    })
+    const publicUrl = await getUrlPublic(fileUid, storage)
+    if (error) throw error
+    return publicUrl
+  }
+
+  const getUrlPublic = async (fileName: string, storage: string) => {
+    const { data } = supabase.storage.from(storage).getPublicUrl(fileName)
+    if (!data.publicUrl) throw new Error()
+    return data.publicUrl
+  }
+
   return {
     get,
     getById,
     post,
     update,
-    remover
+    remover,
+    uploadImg,
+    getPublic
   }
 }
