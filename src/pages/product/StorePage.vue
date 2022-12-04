@@ -15,6 +15,11 @@
   const products = ref<Product[]>([])
   const isLoading = ref(false)
   const filter = ref('')
+  const categoryId = ref('')
+
+  const paramsId = route.params.id.toString()
+
+  const optionsCategories = ref()
 
   const dialog = reactive({
     open: false,
@@ -29,16 +34,23 @@
   const handleListProducts = async (userId: string) => {
     try {
       isLoading.value = true
-      products.value = await api.getPublic('product', userId)
+      products.value = categoryId.value
+        ? await api.getPublic('product', userId, 'category', categoryId.value)
+        : await api.getPublic('product', userId)
     } catch (error) {
-      notifyError(`Não foi possível buscar as categorias!: ${error}`)
+      notifyError(`Não foi possível buscar os produtos!: ${error}`)
     } finally {
       isLoading.value = false
     }
   }
 
+  const getCategories = async (userId: string) => {
+    optionsCategories.value = await api.getPublic('category', userId)
+  }
+
   onMounted(async () => {
     if (route.params.id) {
+      await getCategories(route.params.id.toString())
       await handleListProducts(route.params.id.toString())
     }
   })
@@ -47,6 +59,20 @@
 <template>
   <q-page padding>
     <div class="row">
+      <q-select
+        class="col-4"
+        outlined
+        dense
+        clearable
+        v-model="categoryId"
+        :options="optionsCategories"
+        option-value="id"
+        option-label="name"
+        map-options
+        emit-value
+        label="Categoria"
+        @update:model-value="handleListProducts(paramsId)"
+      />
       <q-table
         grid
         :rows="products"

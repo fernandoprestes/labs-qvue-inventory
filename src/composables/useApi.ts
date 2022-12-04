@@ -29,8 +29,8 @@ export default function useApi () {
     return data
   }
 
-  const getPublic = async (table: string, userId: string) => {
-    const { data, error } = await supabase.from(table).select('*').eq('user_id', userId)
+  const getPublic = async (table: string, userId: string, columnFilter = '', filter = '') => {
+    const { data, error } = await supabase.from(table).select('*').eq('user_id', userId).eq(columnFilter, filter)
     if (error) throw error
     return data
   }

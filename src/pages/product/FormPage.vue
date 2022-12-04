@@ -1,9 +1,13 @@
 <script lang="ts" setup>
   import { Category } from 'src/@types/Category'
   import useApi from 'src/composables/useApi'
+  import useAuthUser from 'src/composables/useAuthUser'
   import useNotify from 'src/composables/useNotify'
   import { computed, onMounted, reactive, ref } from 'vue'
   import { useRouter, useRoute } from 'vue-router'
+
+  const { data } = useAuthUser()
+  const user = data.user
 
   const router = useRouter()
   const route = useRoute()
@@ -48,7 +52,7 @@
   }
 
   const getCategories = async () => {
-    form.optionsCategories = await api.get('category')
+    form.optionsCategories = await api.getPublic('category', user?.id || '')
   }
 
   onMounted(async () => {

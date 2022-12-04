@@ -5,6 +5,10 @@
   import { Category } from 'src/@types/Category'
   import { useQuasar } from 'quasar'
   import { columnsCategory } from './columnsTable'
+  import useAuthUser from 'src/composables/useAuthUser'
+
+  const { data } = useAuthUser()
+  const user = data.user
 
   const api = useApi()
   const $q = useQuasar()
@@ -16,7 +20,7 @@
   const handleListCategories = async () => {
     try {
       isLoading.value = true
-      categories.value = await api.get('category')
+      categories.value = await api.getPublic('category', user?.id || '')
     } catch (error) {
       notifyError(`Não foi possível buscar as categorias!: ${error}`)
     } finally {
